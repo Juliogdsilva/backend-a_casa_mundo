@@ -1,4 +1,4 @@
-const tableName = 'users';
+const tableName = 'companies_points';
 
 /* eslint-disable func-names */
 /**
@@ -8,11 +8,17 @@ const tableName = 'users';
 exports.up = function (knex) {
   return knex.schema.createTable(tableName, (t) => {
     t.increments('id').primary().unsigned();
-    t.string('name').notNullable();
-    t.string('email').notNullable();
-    t.string('password').notNullable();
-    t.text('note').nullable();
-    t.boolean('change_pass').notNullable().defaultTo(false);
+    t.integer('company_id').unsigned().notNullable().references('id')
+      .inTable('companies');
+    t.string('cep').notNullable();
+    t.string('address').notNullable();
+    t.string('number').notNullable();
+    t.string('complement').notNullable();
+    t.string('neighborhood').notNullable();
+    t.string('city').notNullable();
+    t.string('state').notNullable();
+    t.boolean('principal').notNullable().defaultTo(0);
+    t.text('description').nullable();
     t.enum('status', ['active', 'waiting', 'blocked', 'deleted']).notNullable().defaultTo('active');
     t.timestamps(true, true, false);
   });

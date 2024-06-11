@@ -13,7 +13,7 @@ exports.up = function (knex) {
       .unique();
     t.integer('role_id').unsigned().notNullable().references('id')
       .inTable('roles');
-    t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+    t.timestamps(true, true, false);
   });
 };
 

@@ -1,4 +1,4 @@
-const tableName = 'role_permissions';
+const tableName = 'payment_methods';
 
 /* eslint-disable func-names */
 /**
@@ -8,11 +8,10 @@ const tableName = 'role_permissions';
 exports.up = function (knex) {
   return knex.schema.createTable(tableName, (t) => {
     t.increments('id').primary().unsigned();
-    t.integer('role_id').unsigned().notNullable().references('id')
-      .inTable('roles');
-    t.integer('permission_id').unsigned().notNullable().references('id')
-      .inTable('permissions');
-    t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
+    t.string('name').unique().notNullable();
+    t.string('alias').unique().notNullable();
+    t.enum('status', ['active', 'waiting', 'blocked', 'deleted']).notNullable().defaultTo('active');
+    t.timestamps(true, true, false);
   });
 };
 

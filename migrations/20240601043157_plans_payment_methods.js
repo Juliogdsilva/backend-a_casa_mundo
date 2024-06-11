@@ -1,4 +1,4 @@
-const tableName = 'users';
+const tableName = 'plans_payment_methods';
 
 /* eslint-disable func-names */
 /**
@@ -8,12 +8,10 @@ const tableName = 'users';
 exports.up = function (knex) {
   return knex.schema.createTable(tableName, (t) => {
     t.increments('id').primary().unsigned();
-    t.string('name').notNullable();
-    t.string('email').notNullable();
-    t.string('password').notNullable();
-    t.text('note').nullable();
-    t.boolean('change_pass').notNullable().defaultTo(false);
-    t.enum('status', ['active', 'waiting', 'blocked', 'deleted']).notNullable().defaultTo('active');
+    t.integer('plan_id').unsigned().notNullable().references('id')
+      .inTable('plans');
+    t.integer('payment_method_id').unsigned().notNullable().references('id')
+      .inTable('payment_methods');
     t.timestamps(true, true, false);
   });
 };

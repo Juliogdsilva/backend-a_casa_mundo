@@ -29,8 +29,15 @@ module.exports = (app) => {
     .all(app.src.config.passport.authenticate())
     .get(controllers.roles.get);
 
+  // ------  Buildings ------
+  app
+    .route('/buildings')
+    // .all(app.src.config.passport.authenticate())
+    .post(controllers.buildings.save)
+    .get(controllers.buildings.get);
+
   // ------  COMMON REQUESTS ------
-  app.get('/', (req, res) => res.status(200).send({ msg: 'Backend' }));
+  app.get('/', (req, res) => res.status(200).send({ msg: 'Casa Mundo Api' }));
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));
   app.use('*', (req, res) => res.status(404).send({ msg: 'o endpoint requisitado não foi encontrado' }));
   // app.use('*', (req, res) => res.status(404).send({ msg: 'requested endpoint not found' }));
