@@ -121,6 +121,22 @@ module.exports = (app) => {
     return res.status(200).send({ data: user });
   };
 
+  const getCities = async (req, res) => {
+    const cities = await app
+      .db('buildings')
+      .select('city')
+      .whereNot('status', 'deleted')
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado' });
+        throw err;
+      });
+
+    const newCities = cities.filter((valor, indice, self) => self.indexOf(valor) === indice);
+
+    return res.status(200).send({ newCities });
+  };
+
   const del = async (req, res) => {
     if (!req.originalUrl.startsWith('/users')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
     if (!req.params.id) {
@@ -159,6 +175,7 @@ module.exports = (app) => {
     save,
     get,
     getById,
+    getCities,
     del,
   };
 };
