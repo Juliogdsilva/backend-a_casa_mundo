@@ -132,6 +132,7 @@ module.exports = (app) => {
         throw err;
       });
 
+    console.log(cities);
     const newCities = cities.filter((valor, indice, self) => self.indexOf(valor) === indice);
 
     return res.status(200).send({ ...newCities });
