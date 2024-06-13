@@ -132,8 +132,11 @@ module.exports = (app) => {
         throw err;
       });
 
+    let newCities = [];
+    cities.map((i) => newCities.push(i.city));
+
     console.log(cities);
-    const newCities = cities.filter((valor, indice, self) => self.indexOf(valor) === indice);
+    newCities = newCities.filter((valor, indice, self) => self.indexOf(valor) === indice);
 
     return res.status(200).send({ ...newCities });
   };
