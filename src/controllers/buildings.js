@@ -64,6 +64,7 @@ module.exports = (app) => {
     const perPage = Number(req.query.perPage) || 10;
 
     const search = req.query.search || false;
+    const city = req.query.city || false;
     // const sectorId = Number(req.query.sc) || false;
     // const roleId = Number(req.query.ro) || false;
     const order = req.query.or === 'asc' ? 'asc' : 'desc';
@@ -77,6 +78,7 @@ module.exports = (app) => {
           query.orWhere('construction_companies', 'like', `%${search}%`);
           query.orWhere('id', 'like', `%${search}%`);
         }
+        if (city) query.andWhere('city', 'like', `%${city}%`);
         // if (sectorId) query.andWhere('s.id', sectorId);
         // if (roleId) query.andWhere('r.id', roleId);
       })
@@ -134,8 +136,6 @@ module.exports = (app) => {
 
     let newCities = [];
     cities.map((i) => newCities.push(i.city));
-
-    console.log(cities);
     newCities = newCities.filter((valor, indice, self) => self.indexOf(valor) === indice);
 
     return res.status(200).send({ ...newCities });
