@@ -74,7 +74,8 @@ module.exports = (app) => {
       .modify((query) => {
         if (search) {
           query.andWhere('name', 'like', `%${search}%`);
-          query.andWhere('construction_companies', 'like', `%${search}%`);
+          query.orWhere('construction_companies', 'like', `%${search}%`);
+          query.orWhere('id', 'like', `%${search}%`);
         }
         // if (sectorId) query.andWhere('s.id', sectorId);
         // if (roleId) query.andWhere('r.id', roleId);
