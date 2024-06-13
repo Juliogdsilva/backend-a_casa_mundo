@@ -37,6 +37,12 @@ module.exports = (app) => {
     .get(controllers.buildings.get);
 
   app
+    .route('/buildings/:id')
+    // .all(app.src.config.passport.authenticate())
+    .put(controllers.buildings.save)
+    .get(controllers.buildings.getById);
+
+  app
     .route('/buildings/cities')
     // .all(app.src.config.passport.authenticate())
     .get(controllers.buildings.getCities);
