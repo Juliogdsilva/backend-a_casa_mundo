@@ -11,7 +11,7 @@ exports.up = function (knex) {
     t.string('name').unique().notNullable();
     t.string('cep').notNullable();
     t.string('address').notNullable();
-    t.string('number').notNullable();
+    t.string('number').nullable();
     t.string('complement').nullable();
     t.string('neighborhood').notNullable();
     t.string('city').notNullable();

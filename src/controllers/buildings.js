@@ -23,7 +23,6 @@ module.exports = (app) => {
       existsOrError(building.name, 'Nome não informado');
       existsOrError(building.cep, 'CEP não informado');
       existsOrError(building.address, 'Rua/Av não informado');
-      existsOrError(building.number, 'Numero não informado');
       existsOrError(building.neighborhood, 'Bairro não informado');
       existsOrError(building.city, 'Cidade não informado');
       existsOrError(building.state, 'Estado não informado');
