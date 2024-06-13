@@ -134,7 +134,7 @@ module.exports = (app) => {
 
     const newCities = cities.filter((valor, indice, self) => self.indexOf(valor) === indice);
 
-    return res.status(200).send({ newCities });
+    return res.status(200).send({ ...newCities });
   };
 
   const del = async (req, res) => {
