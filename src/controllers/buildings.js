@@ -8,6 +8,7 @@ module.exports = (app) => {
   } = app.src.tools.validation;
   const { encryptPassword } = app.src.tools.encrypt;
   const { modelBuildings } = app.src.models.buildings;
+  const { uploadFile } = app.src.tools.aws;
 
   const save = async (req, res) => {
     if (!req.originalUrl.startsWith('/buildings')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
@@ -19,13 +20,14 @@ module.exports = (app) => {
     if (req.params.id) building.id = req.params.id;
 
     try {
-      // if (!building.id)
-      existsOrError(building.name, 'Nome não informado');
-      existsOrError(building.cep, 'CEP não informado');
-      existsOrError(building.address, 'Rua/Av não informado');
-      existsOrError(building.neighborhood, 'Bairro não informado');
-      existsOrError(building.city, 'Cidade não informado');
-      existsOrError(building.state, 'Estado não informado');
+      if (!building.id) {
+        existsOrError(building.name, 'Nome não informado');
+        existsOrError(building.cep, 'CEP não informado');
+        existsOrError(building.address, 'Rua/Av não informado');
+        existsOrError(building.neighborhood, 'Bairro não informado');
+        existsOrError(building.city, 'Cidade não informado');
+        existsOrError(building.state, 'Estado não informado');
+      }
     } catch (msg) {
       return res.status(400).send({ msg });
     }
@@ -45,7 +47,7 @@ module.exports = (app) => {
           throw err;
         });
     } else {
-      await app
+      const id = await app
         .db('buildings')
         .insert(building)
         .then()
@@ -53,7 +55,28 @@ module.exports = (app) => {
           res.status(500).send({ msg: 'Erro inesperado' });
           throw err;
         });
+      building.id = id[0];
     }
+
+    if (req.files) {
+      req.files.forEach((file) => {
+        const type = file.mimetype.split('/')[1];
+        const name = `${Date.now().toString()}.${type}`;
+        const path = `web/buildings/${building.id}/${name}`;
+        const url = `${process.env.CDN_LINK}/${path}`;
+        uploadFile(file, 'Erro ao subir imagem', path);
+
+        app
+          .db('buildings_images')
+          .insert({ building_id: building.id, name, url })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado' });
+            throw err;
+          });
+      });
+    }
+
     return res.status(204).send();
   };
 
@@ -69,7 +92,7 @@ module.exports = (app) => {
     // const roleId = Number(req.query.ro) || false;
     const order = req.query.or === 'asc' ? 'asc' : 'desc';
 
-    const users = await app
+    const buildings = await app
       .db('buildings')
       .select('*')
       .modify((query) => {
@@ -93,7 +116,22 @@ module.exports = (app) => {
         res.status(500).send({ msg: 'Erro inesperado' });
         throw err;
       });
-    return res.status(200).send({ ...users });
+
+    for (let i = 0; i < buildings.data.length; i++) {
+      const building = buildings.data[i];
+
+      const images = await app.db('buildings_images')
+        .select('id', 'name', 'url')
+        .where({ building_id: building.id })
+        .catch((err) => {
+          res.status(500).send({ msg: 'Erro inesperado' });
+          throw err;
+        });
+      console.log(images);
+      building.images = images;
+    }
+
+    return res.status(200).send({ ...buildings });
   };
 
   const getById = async (req, res) => {

@@ -33,7 +33,7 @@ module.exports = (app) => {
   app
     .route('/buildings')
     // .all(app.src.config.passport.authenticate())
-    .post(controllers.buildings.save)
+    .post(upload.array('images'), controllers.buildings.save)
     .get(controllers.buildings.get);
 
   app
@@ -44,7 +44,7 @@ module.exports = (app) => {
   app
     .route('/buildings/:id')
     // .all(app.src.config.passport.authenticate())
-    .put(controllers.buildings.save)
+    .put(upload.array('images'), controllers.buildings.save)
     .get(controllers.buildings.getById);
 
   // ------  COMMON REQUESTS ------
