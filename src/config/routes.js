@@ -63,11 +63,11 @@ module.exports = (app) => {
     .get(controllers.buildings.getById);
 
   // ------  Campaigns ------
-  app
-    .route('/campaigns/:id')
-    .all(app.src.config.passport.authenticate())
-    .post(upload.single('folder'), controllers.campaigns.save)
-    .get(controllers.campaigns.get);
+  // app
+  //   .route('/campaigns/:id')
+  //   .all(app.src.config.passport.authenticate())
+  //   .post(upload.single('folder'), controllers.campaigns.save)
+  //   .get(controllers.campaigns.get);
 
   // ------  REPORTS REQUESTS ------
   app.get('/reports/buildings', app.src.config.passport.authenticate(), controllers.reports.getTotalBuildings);
