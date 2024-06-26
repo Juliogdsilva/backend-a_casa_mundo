@@ -47,8 +47,10 @@ module.exports = (app) => {
         throw err;
       });
 
+    let company = null;
+    let plan = null;
     if (role.name === 'user') {
-      const company = await app.db('user_company as us')
+      company = await app.db('user_company as us')
         .select('co.name as name', 'co.email as email', 'co.phone as phone', 'co.created_at as created_at', 'co.updated_at as updated_at')
         .leftJoin('companies as co', 'co.id', 'us.company_id')
         .where('us.user_id', user.id)
@@ -58,7 +60,7 @@ module.exports = (app) => {
           throw err;
         });
 
-      const plan = await app.db('companies_plans')
+      plan = await app.db('companies_plans')
         .select('*')
         .where('company_id', company.id)
         .first()
@@ -66,7 +68,8 @@ module.exports = (app) => {
           res.status(500).send({ msg: 'Erro inesperado' });
           throw err;
         });
-
+      console.log(company);
+      console.log(plan);
       if (!company || !plan) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
       if (plan?.status !== 'active') return res.status(402).send({ msg: 'Realize o Pagamento para acessar a plataforma' });
     }
