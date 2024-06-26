@@ -64,7 +64,7 @@ module.exports = (app) => {
 
   // ------  REPORTS REQUESTS ------
   app.get('/reports/buildings', app.src.config.passport.authenticate(), controllers.reports.getTotalBuildings);
-  app.get('/reports/campaigns', controllers.reports.getTotalCampaigns);
+  app.get('/reports/campaigns/:id', app.src.config.passport.authenticate(), controllers.reports.getTotalCampaigns);
 
   // ------  COMMON REQUESTS ------
   app.get('/', (req, res) => res.status(200).send({ msg: 'Casa Mundo Api' }));
