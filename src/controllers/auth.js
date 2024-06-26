@@ -60,7 +60,8 @@ module.exports = (app) => {
           throw err;
         });
 
-      if (!company?.id) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
+      if (!company) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
+      console.log(company);
       plan = await app.db('companies_plans')
         .select('*')
         .where('company_id', company.id)
@@ -69,7 +70,6 @@ module.exports = (app) => {
           res.status(500).send({ msg: 'Erro inesperado' });
           throw err;
         });
-      console.log(company);
       console.log(plan);
       if (!plan) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
       if (plan?.status !== 'active') return res.status(402).send({ msg: 'Realize o Pagamento para acessar a plataforma' });
