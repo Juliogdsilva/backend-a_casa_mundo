@@ -19,7 +19,7 @@ module.exports = (app) => {
         throw err;
       });
 
-    return res.status(200).send({ data: ...buildings[0] });
+    return res.status(200).send({ data: buildings });
   };
 
   const getTotalCampaigns = async (req, res) => {
