@@ -146,6 +146,7 @@ module.exports = (app) => {
       .db('buildings')
       .select('*')
       .where({ id: req.params.id })
+      .first()
       .then()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado' });
@@ -171,7 +172,7 @@ module.exports = (app) => {
         .send({ msg: 'Verifique os parâmetro da requisição' });
     }
 
-    const user = await app
+    const building = await app
       .db('buildings')
       .select('id')
       .where({ id: req.params.id })
@@ -182,12 +183,12 @@ module.exports = (app) => {
         res.status(500).send({ msg: 'Erro inesperado' });
         throw err;
       });
-    if (!user) return res.status(404).send({ msg: 'Empreendimento não localizado' });
+    if (!building) return res.status(404).send({ msg: 'Empreendimento não localizado' });
 
     await app
       .db('buildings')
       .update({ deleted_at: new Date(), status: 'deleted' })
-      .where({ id: user.id })
+      .where({ id: building.id })
       .then()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado' });
