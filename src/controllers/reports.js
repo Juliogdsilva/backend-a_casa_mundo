@@ -13,6 +13,7 @@ module.exports = (app) => {
     const buildings = await app
       .db('buildings')
       .count('id as count')
+      .first()
       .then()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado' });
