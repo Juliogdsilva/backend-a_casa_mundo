@@ -51,7 +51,7 @@ module.exports = (app) => {
     let plan = null;
     if (role.name === 'user') {
       company = await app.db('user_company as us')
-        .select('co.name as name', 'co.email as email', 'co.phone as phone', 'co.created_at as created_at', 'co.updated_at as updated_at')
+        .select('co.id as id', 'co.name as name', 'co.email as email', 'co.phone as phone', 'co.created_at as created_at', 'co.updated_at as updated_at')
         .leftJoin('companies as co', 'co.id', 'us.company_id')
         .where('us.user_id', user.id)
         .first()
