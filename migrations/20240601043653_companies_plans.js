@@ -17,10 +17,14 @@ exports.up = function (knex) {
       .inTable('payment_methods');
     t.integer('payment_by').unsigned().notNullable().references('id')
       .inTable('users');
+    t.integer('seller_by').unsigned().nullable().references('id')
+      .inTable('users');
     t.string('partner_number').nullable();
+    t.float('amount').notNullable();
     t.integer('installments').nullable();
     t.float('discount').nullable();
-    t.boolean('recurrence').defaultTo(1);
+    t.boolean('recurrence').defaultTo(0);
+    t.boolean('auto_renew').defaultTo(0).notNullable();
     t.timestamp('start_at').notNullable().defaultTo(knex.fn.now());
     t.timestamp('end_at').nullable();
     t.timestamp('last_payment_at').nullable();

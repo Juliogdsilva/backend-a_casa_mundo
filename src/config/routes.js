@@ -4,10 +4,17 @@ const upload = require('../middlewares/multer');
 module.exports = (app) => {
   const controllers = { ...app.src.controllers };
   const { havePermission } = app.src.config.permission;
+  // const { haveRole } = app.src.config.roles;
 
   // ------  AUTH REQUESTS ------
   app.post('/signin', controllers.auth.signin);
   app.post('/validate_token', controllers.auth.validateToken);
+
+  // ------  ROLES ------
+  app
+    .route('/roles')
+    .all(app.src.config.passport.authenticate())
+    .get(controllers.roles.get);
 
   // ------  USERS ------
   app
@@ -23,11 +30,19 @@ module.exports = (app) => {
     .get(controllers.users.getById)
     .delete(controllers.users.del);
 
-  // ------  ROLES ------
+  // ------  COMPANIES ------
   app
-    .route('/roles')
+    .route('/companies')
     .all(app.src.config.passport.authenticate())
-    .get(controllers.roles.get);
+    .post(controllers.companies.save)
+    .get(controllers.companies.get);
+
+  app
+    .route('/companies/:id')
+    .all(app.src.config.passport.authenticate())
+    .put(controllers.companies.save)
+    .get(controllers.companies.getById)
+    .delete(controllers.companies.del);
 
   // ------  Buildings ------
   app
@@ -46,6 +61,10 @@ module.exports = (app) => {
     // .all(app.src.config.passport.authenticate())
     .put(upload.array('images'), controllers.buildings.save)
     .get(controllers.buildings.getById);
+
+  // ------  REPORTS REQUESTS ------
+  app.get('/reports/buildings', app.src.config.passport.authenticate(), controllers.reports.getTotalBuildings);
+  app.get('/reports/campaigns', controllers.reports.getTotalCampaigns);
 
   // ------  COMMON REQUESTS ------
   app.get('/', (req, res) => res.status(200).send({ msg: 'Casa Mundo Api' }));

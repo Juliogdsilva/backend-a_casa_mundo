@@ -9,6 +9,68 @@ module.exports = (app) => {
   const { encryptPassword } = app.src.tools.encrypt;
   const { modelUsers } = app.src.models.users;
 
+  const addCompany = async (userId, companyId) => {
+    const exists = await app
+      .db('user_company')
+      .where({ id: userId })
+      .first();
+
+    if (exists) {
+      app
+        .db('user_company')
+        .update({
+          company_id: companyId,
+        })
+        .where({ id: exists.id })
+        .then()
+        .catch((err) => {
+          throw err;
+        });
+    } else {
+      app
+        .db('user_company')
+        .insert({
+          user_id: userId,
+          company_id: companyId,
+        })
+        .then()
+        .catch((err) => {
+          throw err;
+        });
+    }
+  };
+
+  const addRole = async (userId, roleId) => {
+    const exists = await app
+      .db('user_role')
+      .where({ id: userId })
+      .first();
+
+    if (exists) {
+      app
+        .db('user_role')
+        .update({
+          role_id: roleId,
+        })
+        .where({ id: exists.id })
+        .then()
+        .catch((err) => {
+          throw err;
+        });
+    } else {
+      app
+        .db('user_role')
+        .insert({
+          user_id: userId,
+          role_id: roleId,
+        })
+        .then()
+        .catch((err) => {
+          throw err;
+        });
+    }
+  };
+
   const save = async (req, res) => {
     if (!req.originalUrl.startsWith('/users')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
 
@@ -27,6 +89,7 @@ module.exports = (app) => {
           data.confirm_email,
           'Confirmação de E-mail não informado',
         );
+        equalsOrError(user.email, data.confirm_email, 'E-mails informados não são idênticos');
 
         const existsClient = await app
           .db('users')
@@ -49,6 +112,32 @@ module.exports = (app) => {
         );
         user.password = await encryptPassword(data.password);
       }
+      if (user.role_id) {
+        const existRole = await app
+          .db('roles')
+          .where({ id: user.role_id })
+          .whereNot('status', 'deleted')
+          .first();
+        existsOrError(existRole, 'Cargo do usuário não existe');
+      }
+      if (!user.role_id) {
+        existsOrError(user.company_id, 'Usuário sem uma empresa associada');
+        const role = await app
+          .db('roles')
+          .where({ name: 'user' })
+          .whereNot('status', 'deleted')
+          .first();
+        existsOrError(role, 'Erro ao associar usuário ao cargo');
+        user.role_id = role?.id;
+      }
+      if (user.company_id) {
+        const existCompany = await app
+          .db('companies')
+          .where({ id: user.company_id })
+          .whereNot('status', 'deleted')
+          .first();
+        existsOrError(existCompany, 'Empresa do usuário não existe');
+      }
     } catch (msg) {
       return res.status(400).send({ msg });
     }
@@ -68,7 +157,7 @@ module.exports = (app) => {
           throw err;
         });
     } else {
-      await app
+      const newUser = await app
         .db('users')
         .insert(user)
         .then()
@@ -76,7 +165,12 @@ module.exports = (app) => {
           res.status(500).send({ msg: 'Erro inesperado' });
           throw err;
         });
+      user.id = newUser[0];
     }
+
+    if (data.company_id) await addCompany(user.id, data.company_id);
+    if (data.role_id) await addRole(user.id, data.role_id);
+
     return res.status(204).send();
   };
 
@@ -87,25 +181,22 @@ module.exports = (app) => {
     const perPage = Number(req.query.perPage) || 10;
 
     const search = req.query.search || false;
-    const sectorId = Number(req.query.sc) || false;
     const roleId = Number(req.query.ro) || false;
     const order = req.query.or === 'asc' ? 'asc' : 'desc';
 
     const users = await app
       .db('users as u')
-      .select('u.id', 'u.name', 'u.email', 'u.status', 'u.created_at', 'r.alias as role', 'r.name as role_name', 'r.id as role_id', 's.alias as sector', 's.name as sector_names', 's.id as sector_id')
+      .select('u.id', 'u.name', 'u.email', 'u.status', 'u.created_at', 'r.alias as role', 'r.name as role_name', 'r.id as role_id')
       .modify((query) => {
         if (search) {
           query.andWhere('u.name', 'like', `%${search}%`);
           query.andWhere('u.email', 'like', `%${search}%`);
         }
-        if (sectorId) query.andWhere('s.id', sectorId);
         if (roleId) query.andWhere('r.id', roleId);
       })
       .whereNot('u.status', 'deleted')
       .leftJoin('user_role as ur', 'ur.user_id', 'u.id')
       .leftJoin('roles as r', 'r.id', 'ur.role_id')
-      .leftJoin('sectors as s', 's.id', 'r.sector_id')
       .orderBy('u.id', order)
       .paginate({ perPage, currentPage, isLengthAware: true })
       .then()

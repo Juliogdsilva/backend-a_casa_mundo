@@ -24,6 +24,10 @@ module.exports = () => {
     if (valueA === valueB) throw msg;
   }
 
+  function checkLimit(valueA, valueB, msg) {
+    if (valueA >= valueB) throw msg;
+  }
+
   function isEmailValid(value, msg) {
     if (/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) return true;
     throw msg;
@@ -38,6 +42,12 @@ module.exports = () => {
     const isFormatted = /^(\d{3}.\d{3}.\d{3}-\d{2})|(\d{11})$/.test(value);
     const exist = CPF.isValid(value);
     if (exist && isFormatted) return true;
+    throw msg;
+  }
+
+  function isCNPJValid(value, msg) {
+    const isFormatted = /^(\d{2}.\d{3}.\d{3}\/\d{4}-\d{2})|(\d{14})$/.test(value);
+    if (isFormatted) return true;
     throw msg;
   }
 
@@ -57,9 +67,11 @@ module.exports = () => {
     notExistsOrError,
     equalsOrError,
     notEqualsOrError,
+    checkLimit,
     isEmailValid,
     isPasswordValid,
     isCPFValid,
+    isCNPJValid,
     isCepValid,
     justNumbers,
   };

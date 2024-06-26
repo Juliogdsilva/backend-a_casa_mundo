@@ -28,17 +28,17 @@ module.exports = (app) => {
     const isMatch = await comparePassword(req.body.password, user.password);
     if (!isMatch) return res.status(401).send({ msg: 'E-mail ou Senha Inválidos' });
 
-    const permissions = await app.db('user_permissions as up')
-      .select('up.user_id', 'p.name as permission', 'p.alias as permission_alias')
-      .leftJoin('permissions as p', 'p.id', 'up.permission_id')
-      .where('up.user_id', user.id)
-      .catch((err) => {
-        res.status(500).send({ msg: 'Erro inesperado' });
-        throw err;
-      });
+    // const permissions = await app.db('user_permissions as up')
+    //   .select('up.user_id', 'p.name as permission', 'p.alias as permission_alias')
+    //   .leftJoin('permissions as p', 'p.id', 'up.permission_id')
+    //   .where('up.user_id', user.id)
+    //   .catch((err) => {
+    //     res.status(500).send({ msg: 'Erro inesperado' });
+    //     throw err;
+    //   });
 
     const role = await app.db('user_role as ur')
-      .select('ur.user_id', 'r.name as role', 'r.alias as role_alias')
+      .select('r.name as role', 'r.alias as role_alias')
       .leftJoin('roles as r', 'r.id', 'ur.role_id')
       .where('ur.user_id', user.id)
       .first()
@@ -47,7 +47,28 @@ module.exports = (app) => {
         throw err;
       });
 
-    const exists2FA = await app.db('user_2fa').where({ user_id: user.id }).first();
+    let company = null;
+    let plan = null;
+    if (role.name === 'user') {
+      company = await app.db('user_company as us')
+        .select('co.name as name', 'co.email as email', 'co.phone as phone', 'co.created_at as created_at', 'co.updated_at as updated_at')
+        .leftJoin('companies as co', 'co.id', 'us.company_id')
+        .where('us.user_id', user.id)
+        .first()
+        .catch((err) => {
+          res.status(500).send({ msg: 'Erro inesperado' });
+          throw err;
+        });
+
+      plan = await app.db('companies_plans')
+        .select('*')
+        .where('company_id', company.id)
+        .first()
+        .catch((err) => {
+          res.status(500).send({ msg: 'Erro inesperado' });
+          throw err;
+        });
+    }
 
     const now = Math.floor(Date.now() / 1000);
     const days = Number(process.env.DAYS_TOKEN) || 3;
@@ -55,9 +76,10 @@ module.exports = (app) => {
     const payload = {
       id: user.id,
       name: user.name,
-      permissions,
-      role,
-      twf: exists2FA ? exists2FA.status : false,
+      role: role.name,
+      role_infos: role,
+      company,
+      plan,
       iat: now,
       exp: now + (60 * 60 * 24 * days),
     };

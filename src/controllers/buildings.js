@@ -88,7 +88,7 @@ module.exports = (app) => {
 
     const search = req.query.search || false;
     const city = req.query.city || false;
-    // const sectorId = Number(req.query.sc) || false;
+    const date = req.query.date || false;
     // const roleId = Number(req.query.ro) || false;
     const order = req.query.or === 'asc' ? 'asc' : 'desc';
 
@@ -102,9 +102,11 @@ module.exports = (app) => {
           query.orWhere('id', 'like', `%${search}%`);
         }
         if (city) query.andWhere('city', 'like', `%${city}%`);
+        if (date) query.andWhere('completion_date', 'like', `%${date}%`);
         // if (sectorId) query.andWhere('s.id', sectorId);
         // if (roleId) query.andWhere('r.id', roleId);
       })
+      .whereNot('status', 'blocked')
       .whereNot('status', 'deleted')
       // .leftJoin('user_role as ur', 'ur.user_id', 'u.id')
       // .leftJoin('roles as r', 'r.id', 'ur.role_id')
@@ -116,8 +118,7 @@ module.exports = (app) => {
         res.status(500).send({ msg: 'Erro inesperado' });
         throw err;
       });
-
-    for (let i = 0; i < buildings.data.length; i++) {
+    for (let i = 0; i < buildings.data.length; i += 1) {
       const building = buildings.data[i];
 
       const images = await app.db('buildings_images')
@@ -127,7 +128,6 @@ module.exports = (app) => {
           res.status(500).send({ msg: 'Erro inesperado' });
           throw err;
         });
-      console.log(images);
       building.images = images;
     }
 
@@ -159,24 +159,6 @@ module.exports = (app) => {
         throw err;
       });
     return res.status(200).send({ data: user });
-  };
-
-  const getCities = async (req, res) => {
-    const cities = await app
-      .db('buildings')
-      .select('city')
-      .whereNot('status', 'deleted')
-      .then()
-      .catch((err) => {
-        res.status(500).send({ msg: 'Erro inesperado' });
-        throw err;
-      });
-
-    let newCities = [];
-    cities.map((i) => newCities.push(i.city));
-    newCities = newCities.filter((valor, indice, self) => self.indexOf(valor) === indice);
-
-    return res.status(200).send({ data: newCities });
   };
 
   const del = async (req, res) => {
@@ -211,6 +193,23 @@ module.exports = (app) => {
       });
 
     return res.status(204).send();
+  };
+
+  const getCities = async (req, res) => {
+    const cities = await app
+      .db('buildings')
+      .select('city')
+      .whereNot('status', 'deleted')
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado' });
+        throw err;
+      });
+    const newCities = cities
+      .map((i) => i.city)
+      .filter((valor, indice, self) => self.indexOf(valor) === indice);
+
+    return res.status(200).send({ data: newCities });
   };
 
   return {
