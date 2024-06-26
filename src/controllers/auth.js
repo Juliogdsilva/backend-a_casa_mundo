@@ -61,10 +61,11 @@ module.exports = (app) => {
         });
 
       if (!company) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
-      console.log(company);
-      plan = await app.db('companies_plans')
-        .select('*')
-        .where('company_id', company.id)
+
+      plan = await app.db('companies_plans as cp')
+        .select('p.*', 'cp.status as status')
+        .leftJoin('plans as p', 'p.id', 'cp.plan_id')
+        .where('cp.company_id', company.id)
         .first()
         .catch((err) => {
           res.status(500).send({ msg: 'Erro inesperado' });
