@@ -135,30 +135,32 @@ module.exports = (app) => {
   };
 
   const getById = async (req, res) => {
-    if (!req.originalUrl.startsWith('/users')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
+    if (!req.originalUrl.startsWith('/buildings')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
     if (!req.params.id) {
       return res
         .status(400)
         .send({ msg: 'Verifique os parâmetro da requisição' });
     }
 
-    const user = await app
-      .db('users')
-      .select(
-        'id',
-        'name',
-        'email',
-        'status',
-        'created_at',
-        'updated_at',
-      )
+    const building = await app
+      .db('buildings')
+      .select('*')
       .where({ id: req.params.id })
       .then()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado' });
         throw err;
       });
-    return res.status(200).send({ data: user });
+
+    const images = await app.db('buildings_images')
+      .select('id', 'name', 'url')
+      .where({ building_id: building.id })
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado' });
+        throw err;
+      });
+    building.images = images;
+    return res.status(200).send({ data: building });
   };
 
   const del = async (req, res) => {
