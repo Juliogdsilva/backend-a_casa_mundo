@@ -68,6 +68,9 @@ module.exports = (app) => {
           res.status(500).send({ msg: 'Erro inesperado' });
           throw err;
         });
+
+      if (!company || !plan) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
+      if (plan?.status != 'active') return res.status(402).send({ msg: 'Realize o Pagamento para acessar a plataforma' });
     }
 
     const now = Math.floor(Date.now() / 1000);
