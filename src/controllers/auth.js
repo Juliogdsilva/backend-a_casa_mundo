@@ -38,7 +38,7 @@ module.exports = (app) => {
     //   });
 
     const role = await app.db('user_role as ur')
-      .select('r.name as role', 'r.alias as role_alias')
+      .select('r.name as name', 'r.alias as role_alias')
       .leftJoin('roles as r', 'r.id', 'ur.role_id')
       .where('ur.user_id', user.id)
       .first()
