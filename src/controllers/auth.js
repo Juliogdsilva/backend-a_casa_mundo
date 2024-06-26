@@ -60,7 +60,7 @@ module.exports = (app) => {
           throw err;
         });
 
-      if (!company) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
+      if (!company?.id) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
       plan = await app.db('companies_plans')
         .select('*')
         .where('company_id', company.id)
