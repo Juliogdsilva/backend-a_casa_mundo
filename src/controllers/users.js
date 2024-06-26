@@ -112,28 +112,28 @@ module.exports = (app) => {
         );
         user.password = await encryptPassword(data.password);
       }
-      if (user.role_id) {
+      if (data.role_id) {
         const existRole = await app
           .db('roles')
-          .where({ id: user.role_id })
+          .where({ id: data.role_id })
           .whereNot('status', 'deleted')
           .first();
         existsOrError(existRole, 'Cargo do usuário não existe');
       }
-      if (!user.role_id) {
-        existsOrError(user.company_id, 'Usuário sem uma empresa associada');
+      if (!data.role_id) {
+        existsOrError(data.company_id, 'Usuário sem uma empresa associada');
         const role = await app
           .db('roles')
           .where({ name: 'user' })
           .whereNot('status', 'deleted')
           .first();
         existsOrError(role, 'Erro ao associar usuário ao cargo');
-        user.role_id = role?.id;
+        data.role_id = role?.id;
       }
-      if (user.company_id) {
+      if (data.company_id) {
         const existCompany = await app
           .db('companies')
-          .where({ id: user.company_id })
+          .where({ id: data.company_id })
           .whereNot('status', 'deleted')
           .first();
         existsOrError(existCompany, 'Empresa do usuário não existe');

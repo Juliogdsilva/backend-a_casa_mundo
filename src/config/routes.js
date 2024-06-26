@@ -47,20 +47,27 @@ module.exports = (app) => {
   // ------  Buildings ------
   app
     .route('/buildings')
-    // .all(app.src.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .post(upload.array('images'), controllers.buildings.save)
     .get(controllers.buildings.get);
 
   app
     .route('/buildings/cities')
-    // .all(app.src.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .get(controllers.buildings.getCities);
 
   app
     .route('/buildings/:id')
-    // .all(app.src.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .put(upload.array('images'), controllers.buildings.save)
     .get(controllers.buildings.getById);
+
+  // ------  Campaigns ------
+  app
+    .route('/campaigns/:id')
+    .all(app.src.config.passport.authenticate())
+    .post(upload.single('folder'), controllers.campaigns.save)
+    .get(controllers.campaigns.get);
 
   // ------  REPORTS REQUESTS ------
   app.get('/reports/buildings', app.src.config.passport.authenticate(), controllers.reports.getTotalBuildings);
