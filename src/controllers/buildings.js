@@ -164,7 +164,7 @@ module.exports = (app) => {
   };
 
   const del = async (req, res) => {
-    if (!req.originalUrl.startsWith('/users')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
+    if (!req.originalUrl.startsWith('/buildings')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
     if (!req.params.id) {
       return res
         .status(400)
@@ -172,8 +172,8 @@ module.exports = (app) => {
     }
 
     const user = await app
-      .db('users')
-      .select('id', 'name', 'email')
+      .db('buildings')
+      .select('id')
       .where({ id: req.params.id })
       .whereNot('status', 'deleted')
       .first()
@@ -182,10 +182,10 @@ module.exports = (app) => {
         res.status(500).send({ msg: 'Erro inesperado' });
         throw err;
       });
-    if (!user) return res.status(404).send({ msg: 'Usuário não localizado' });
+    if (!user) return res.status(404).send({ msg: 'Empreendimento não localizado' });
 
     await app
-      .db('users')
+      .db('buildings')
       .update({ deleted_at: new Date(), status: 'deleted' })
       .where({ id: user.id })
       .then()
