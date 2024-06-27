@@ -44,6 +44,23 @@ module.exports = (app) => {
     .get(controllers.companies.getById)
     .delete(controllers.companies.del);
 
+  // ------  COMPANIES PLANS ------
+  app
+    .route('/companies_plans')
+    // .all(app.src.config.passport.authenticate())
+    .post(controllers.companiesPlans.save)
+    .get(controllers.companiesPlans.get);
+
+  app
+    .route('/companies_plans/companies/:companyId')
+    // .all(app.src.config.passport.authenticate())
+    .get(controllers.companiesPlans.get);
+
+  app
+    .route('/companies_plans/sellers/:sellerId')
+    // .all(app.src.config.passport.authenticate())
+    .get(controllers.companiesPlans.get);
+
   // ------  Buildings ------
   app
     .route('/buildings')
@@ -65,13 +82,20 @@ module.exports = (app) => {
   // ------  Campaigns ------
   app
     .route('/campaigns')
-    // .all(app.src.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .post(upload.single('file'), controllers.campaigns.save)
     .get(controllers.campaigns.get);
 
   app
+    .route('/campaigns/:id')
+    .all(app.src.config.passport.authenticate())
+    .put(upload.single('file'), controllers.campaigns.save)
+    .get(controllers.campaigns.getById)
+    .delete(controllers.campaigns.del);
+
+  app
     .route('/campaigns/company/:id')
-    // .all(app.src.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .get(controllers.campaigns.get);
 
   // ------  REPORTS REQUESTS ------

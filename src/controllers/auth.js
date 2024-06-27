@@ -60,7 +60,7 @@ module.exports = (app) => {
           throw err;
         });
 
-      if (!company) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
+      if (!company) return res.status(500).send({ msg: 'Usuário sem Empresa associada, entre em contato conosco' });
 
       plan = await app.db('companies_plans as cp')
         .select('p.*', 'cp.status as status')
@@ -72,7 +72,7 @@ module.exports = (app) => {
           throw err;
         });
 
-      if (!plan) return res.status(500).send({ msg: 'Encontramos um erro em seu cadastro, entre em contato conosco' });
+      if (!plan) return res.status(500).send({ msg: 'Usuário sem plano associado, entre em contato conosco' });
       if (plan?.status !== 'active') return res.status(402).send({ msg: 'Realize o Pagamento para acessar a plataforma' });
     }
 

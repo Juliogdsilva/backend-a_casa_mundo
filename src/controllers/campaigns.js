@@ -96,15 +96,15 @@ module.exports = (app) => {
   };
 
   const getById = async (req, res) => {
-    if (!req.originalUrl.startsWith('/buildings')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
+    if (!req.originalUrl.startsWith('/campaigns')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
     if (!req.params.id) {
       return res
         .status(400)
         .send({ msg: 'Verifique os parâmetro da requisição' });
     }
 
-    const building = await app
-      .db('buildings')
+    const campaign = await app
+      .db('campaigns')
       .select('*')
       .where({ id: req.params.id })
       .first()
@@ -114,27 +114,19 @@ module.exports = (app) => {
         throw err;
       });
 
-    const images = await app.db('buildings_images')
-      .select('id', 'name', 'url')
-      .where({ building_id: building.id })
-      .catch((err) => {
-        res.status(500).send({ msg: 'Erro inesperado' });
-        throw err;
-      });
-    building.images = images;
-    return res.status(200).send({ data: building });
+    return res.status(200).send({ data: campaign });
   };
 
   const del = async (req, res) => {
-    if (!req.originalUrl.startsWith('/buildings')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
+    if (!req.originalUrl.startsWith('/campaigns')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
     if (!req.params.id) {
       return res
         .status(400)
         .send({ msg: 'Verifique os parâmetro da requisição' });
     }
 
-    const building = await app
-      .db('buildings')
+    const campaign = await app
+      .db('campaigns')
       .select('id')
       .where({ id: req.params.id })
       .whereNot('status', 'deleted')
@@ -144,12 +136,12 @@ module.exports = (app) => {
         res.status(500).send({ msg: 'Erro inesperado' });
         throw err;
       });
-    if (!building) return res.status(404).send({ msg: 'Empreendimento não localizado' });
+    if (!campaign) return res.status(404).send({ msg: 'Campanha não localizado' });
 
     await app
-      .db('buildings')
-      .update({ deleted_at: new Date(), status: 'deleted' })
-      .where({ id: building.id })
+      .db('campaigns')
+      .update({ updated_at: new Date(), status: 'deleted' })
+      .where({ id: campaign.id })
       .then()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado' });
