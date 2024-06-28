@@ -20,6 +20,7 @@ module.exports = (app) => {
         existsOrError(companiesPlans.plan_id, 'Plano não informado');
         existsOrError(companiesPlans.payment_method_id, 'Método de pagamento não informado');
         existsOrError(companiesPlans.payment_by, 'Pagador não informado');
+        existsOrError(companiesPlans.amount, 'Valor não informado');
       }
     } catch (msg) {
       return res.status(400).send({ msg });
