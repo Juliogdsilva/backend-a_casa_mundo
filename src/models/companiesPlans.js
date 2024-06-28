@@ -7,6 +7,7 @@ module.exports = () => {
       payment_method_id: item.payment_method_id,
       payment_by: item.payment_by,
       partner_number: item.partner_number,
+      amount: item.amount,
       installments: item.installments,
       discount: item.discount,
       recurrence: item.recurrence,
