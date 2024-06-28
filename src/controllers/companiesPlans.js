@@ -3,7 +3,7 @@ module.exports = (app) => {
     existsOrError,
     justNumbers,
   } = app.src.tools.validation;
-  const { generatorHashCode } = app.src.tools.generator;
+  const { getUUID } = app.src.tools.generator;
   const { modelCompaniesPlans } = app.src.models.companiesPlans;
 
   const save = async (req, res) => {
@@ -16,7 +16,7 @@ module.exports = (app) => {
 
     try {
       if (!companiesPlans.id) {
-        companiesPlans.transaction_id = await generatorHashCode();
+        companiesPlans.transaction_id = await getUUID();
         existsOrError(companiesPlans.company_id, 'Empresa não informada');
         existsOrError(companiesPlans.plan_id, 'Plano não informado');
         existsOrError(companiesPlans.payment_method_id, 'Método de pagamento não informado');
