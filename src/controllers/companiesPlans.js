@@ -10,6 +10,7 @@ module.exports = (app) => {
     if (!req.originalUrl.startsWith('/companies_plans')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
 
     const companiesPlans = await modelCompaniesPlans(req.body);
+    const data = { ...req.body };
     const date = new Date();
 
     if (req.params.id) companiesPlans.id = req.params.id;
@@ -29,6 +30,8 @@ module.exports = (app) => {
     } catch (msg) {
       return res.status(400).send({ msg });
     }
+
+    if (data.seller_id) companiesPlans.seller_id = data.seller_id;
 
     if (companiesPlans.id) {
       companiesPlans.updated_at = date;
