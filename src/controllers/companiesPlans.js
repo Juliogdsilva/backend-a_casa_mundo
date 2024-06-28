@@ -1,6 +1,7 @@
 module.exports = (app) => {
   const {
     existsOrError,
+    justNumbers,
   } = app.src.tools.validation;
   const { generatorHashCode } = app.src.tools.generator;
   const { modelCompaniesPlans } = app.src.models.companiesPlans;
@@ -22,6 +23,9 @@ module.exports = (app) => {
         existsOrError(companiesPlans.payment_by, 'Pagador não informado');
         existsOrError(companiesPlans.amount, 'Valor não informado');
       }
+      if (companiesPlans.amount) justNumbers(companiesPlans.amount);
+      if (companiesPlans.discount) justNumbers(companiesPlans.discount);
+      if (companiesPlans.installments) justNumbers(companiesPlans.installments);
     } catch (msg) {
       return res.status(400).send({ msg });
     }
