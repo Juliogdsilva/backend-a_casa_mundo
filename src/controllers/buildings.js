@@ -97,17 +97,16 @@ module.exports = (app) => {
       .select('*')
       .modify((query) => {
         if (search) {
-          query.andWhere('name', 'like', `%${search}%`);
+          query.where('name', 'like', `%${search}%`);
           query.orWhere('construction_companies', 'like', `%${search}%`);
           query.orWhere('id', 'like', `%${search}%`);
         }
-        if (city) query.andWhere('city', 'like', `%${city}%`);
-        if (date) query.andWhere('completion_date', 'like', `%${date}%`);
+        if (city) query.where('city', 'like', `%${city}%`);
+        if (date) query.where('completion_date', 'like', `%${date}%`);
         // if (sectorId) query.andWhere('s.id', sectorId);
         // if (roleId) query.andWhere('r.id', roleId);
       })
-      .whereNot('status', 'blocked')
-      .whereNot('status', 'deleted')
+      .where('status', 'active')
       // .leftJoin('user_role as ur', 'ur.user_id', 'u.id')
       // .leftJoin('roles as r', 'r.id', 'ur.role_id')
       // .leftJoin('sectors as s', 's.id', 'r.sector_id')
