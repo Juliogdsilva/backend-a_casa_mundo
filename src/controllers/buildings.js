@@ -88,8 +88,7 @@ module.exports = (app) => {
 
     const search = req.query.search || false;
     const city = req.query.city || false;
-    const date = req.query.date?.replace('%2F', '/') || false;
-    // const roleId = Number(req.query.ro) || false;
+    const date = req.query.date || false;
     const order = req.query.or === 'asc' ? 'asc' : 'desc';
 
     const buildings = await app
@@ -103,13 +102,8 @@ module.exports = (app) => {
         }
         if (city) query.where('city', 'like', `%${city}%`);
         if (date) query.where('completion_date', 'like', `%${date}%`);
-        // if (sectorId) query.andWhere('s.id', sectorId);
-        // if (roleId) query.andWhere('r.id', roleId);
       })
       .where('status', 'active')
-      // .leftJoin('user_role as ur', 'ur.user_id', 'u.id')
-      // .leftJoin('roles as r', 'r.id', 'ur.role_id')
-      // .leftJoin('sectors as s', 's.id', 'r.sector_id')
       .orderBy('id', order)
       .paginate({ perPage, currentPage, isLengthAware: true })
       .then()
