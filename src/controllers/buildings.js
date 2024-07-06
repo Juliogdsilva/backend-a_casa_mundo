@@ -88,7 +88,7 @@ module.exports = (app) => {
 
     const search = req.query.search || false;
     const city = req.query.city || false;
-    const date = req.query.date || false;
+    const date = req.query.date?.replace('%2F', '/') || false;
     // const roleId = Number(req.query.ro) || false;
     const order = req.query.or === 'asc' ? 'asc' : 'desc';
 
