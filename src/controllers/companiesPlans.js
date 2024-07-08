@@ -71,18 +71,22 @@ module.exports = (app) => {
     const order = req.query.or === 'asc' ? 'asc' : 'desc';
 
     const companiesPlans = await app
-      .db('companies_plans')
-      .select('*')
+      .db('companies_plans as cp')
+      .select('cp.transaction_id', 'cp.company_id', 'pl.name as plan', 'pm.name as payment_method', 'pa.name as payment_by', 'se.name as seller', 'cp.amount', 'cp.installments', 'cp.discount')
+      .leftJoin('plans as pl', 'pl.id', 'cp.plan_id')
+      .leftJoin('payment_methods as pm', 'pm.id', 'cp.payment_method_id')
+      .leftJoin('users as pa', 'pa.id', 'cp.payment_by')
+      .leftJoin('users as se', 'se.id', 'cp.seller_id')
       .modify((query) => {
         if (search) {
-          query.andWhere('transaction_id', 'like', `%${search}%`);
-          query.orWhere('id', 'like', `%${search}%`);
+          query.andWhere('cp.transaction_id', 'like', `%${search}%`);
+          query.orWhere('cp.id', 'like', `%${search}%`);
         }
-        if (req.params.sellerId) query.andWhere('seller_id', req.params.sellerId);
-        if (req.params.companyId) query.andWhere('company_id', req.params.companyId);
+        if (req.params.sellerId) query.andWhere('cp.seller_id', req.params.sellerId);
+        if (req.params.companyId) query.andWhere('cp.company_id', req.params.companyId);
       })
-      .whereNot('status', 'deleted')
-      .orderBy('id', order)
+      .whereNot('cp.status', 'deleted')
+      .orderBy('cp.id', order)
       .paginate({ perPage, currentPage, isLengthAware: true })
       .then()
       .catch((err) => {
