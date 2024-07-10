@@ -6,6 +6,7 @@
   "dependencies": {
     "@sentry/node": "^7.48.0",
     "aws-sdk": "^2.1644.0",
+    "axios": "^1.7.2",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.20.1",
     "consign": "^0.1.6",

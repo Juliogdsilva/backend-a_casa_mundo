@@ -35,7 +35,7 @@ consign()
   .then('./src/tools/aws.js')
   .then('./src/models')
   .then('./src/controllers')
-  .then('./src/tools/jobs.js')
+  .then('./src/jobs')
   .then('./src/config/routes.js')
   .into(app);
 
