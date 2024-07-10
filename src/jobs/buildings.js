@@ -3,14 +3,14 @@ const cron = require('node-cron');
 const axios = require('axios');
 
 module.exports = (app) => {
-  cron.schedule('* * * * *', async () => {
+  cron.schedule('*/5 * * * *', async () => {
     const buildings = await app
       .db('buildings')
       .select('id', 'cep')
       .where('latitude', null)
       .orWhere('longitude', null)
       .whereNot('cep', null)
-      .limit(20)
+      .limit(5)
       .then()
       .catch((err) => {
         throw err;
