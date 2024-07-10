@@ -20,7 +20,7 @@ module.exports = (app) => {
       const building = buildings[i];
       console.log(i);
 
-      const getCoordinates = await axios(`https://brasilapi.com.br/api/cep/v2/${building.cep}`)
+      const getCoordinates = axios(`https://brasilapi.com.br/api/cep/v2/${building.cep}`)
         .then()
         .catch((err) => {
           throw err;
