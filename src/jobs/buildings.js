@@ -15,6 +15,8 @@ module.exports = (app) => {
         throw err;
       });
 
+    console.log('b: ');
+    console.log(buildings);
     for (let i = 0; i < buildings.length; i += 1) {
       const building = buildings[i];
 
