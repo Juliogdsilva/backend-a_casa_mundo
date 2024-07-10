@@ -26,6 +26,7 @@ module.exports = (app) => {
 
       const latitude = getCoordinates?.location?.coordinates?.latitude;
       const longitude = getCoordinates?.location?.coordinates?.longitude;
+      console.log(getCoordinates);
 
       if (latitude && longitude) {
         const date = new Date();
