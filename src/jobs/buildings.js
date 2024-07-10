@@ -19,7 +19,7 @@ module.exports = (app) => {
     for (let i = 0; i < buildings.length; i += 1) {
       const building = buildings[i];
 
-      const getCoordinates = axios(`https://brasilapi.com.br/api/cep/v2/${building.cep}`)
+      const getCoordinates = await axios(`https://brasilapi.com.br/api/cep/v2/${building.cep}`)
         .then()
         .catch((err) => {
           if (err.response?.status === 404) return;
