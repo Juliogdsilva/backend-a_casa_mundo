@@ -9,6 +9,7 @@ module.exports = (app) => {
       .where('latitude', null)
       .orWhere('longitude', null)
       .whereNot('cep', null)
+      .limit(20)
       .then()
       .catch((err) => {
         throw err;
