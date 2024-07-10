@@ -18,12 +18,11 @@ module.exports = (app) => {
 
     for (let i = 0; i < buildings.length; i += 1) {
       const building = buildings[i];
-      console.log(i);
 
       const getCoordinates = axios(`https://brasilapi.com.br/api/cep/v2/${building.cep}`)
         .then()
         .catch((err) => {
-          if (err.resp.status === '404') return;
+          // if (err.resp.status === '404') return;
           console.log(err);
           // throw err;
         });
