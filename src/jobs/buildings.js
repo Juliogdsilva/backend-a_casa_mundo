@@ -23,9 +23,10 @@ module.exports = (app) => {
         .then()
         .catch((err) => {
           if (err.response?.status === 404) return;
+          if (err.response?.status === 524) return;
           throw err;
         });
-
+      console.log(getCoordinates);
       const latitude = getCoordinates?.location?.coordinates?.latitude;
       const longitude = getCoordinates?.location?.coordinates?.longitude;
 
