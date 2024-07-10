@@ -23,7 +23,7 @@ module.exports = (app) => {
         .then()
         .catch((err) => {
           // if (err.resp.status === '404') return;
-          console.log(err);
+          console.log(err.res);
           // throw err;
         });
 
