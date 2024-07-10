@@ -28,9 +28,10 @@ module.exports = (app) => {
       const longitude = getCoordinates?.location?.coordinates?.longitude;
 
       if (latitude && longitude) {
+        const date = new Date();
         app
           .db('buildings')
-          .update({ latitude, longitude })
+          .update({ latitude, longitude, updated_at: date })
           .where({ id: building.id })
           .then()
           .catch((err) => {
