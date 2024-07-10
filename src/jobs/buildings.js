@@ -22,9 +22,8 @@ module.exports = (app) => {
       const getCoordinates = axios(`https://brasilapi.com.br/api/cep/v2/${building.cep}`)
         .then()
         .catch((err) => {
-          // if (err.resp.status === '404') return;
-          console.log(err.response?.status);
-          // throw err;
+          if (err.response?.status === 404) return;
+          throw err;
         });
 
       const latitude = getCoordinates?.location?.coordinates?.latitude;
