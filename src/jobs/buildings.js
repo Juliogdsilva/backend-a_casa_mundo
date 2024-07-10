@@ -15,7 +15,8 @@ module.exports = (app) => {
         throw err;
       });
 
-    for (let i = 0; i < buildings.length; i += 1) {
+    // eslint-disable-next-line operator-assignment
+    for (let i = 0; i < buildings.length; i = i + 1) {
       const building = buildings[i];
       console.log(i);
 
