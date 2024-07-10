@@ -15,16 +15,16 @@ module.exports = (app) => {
         throw err;
       });
 
-    console.log('b: ');
-    console.log(buildings);
     for (let i = 0; i < buildings.length; i += 1) {
       const building = buildings[i];
+      console.log('teste');
 
       const getCoordinates = await axios(`https://brasilapi.com.br/api/cep/v2/${building.cep}`)
         .then()
         .catch((err) => {
           throw err;
         });
+      console.log('teste2');
 
       const latitude = getCoordinates?.location?.coordinates?.latitude;
       const longitude = getCoordinates?.location?.coordinates?.longitude;
