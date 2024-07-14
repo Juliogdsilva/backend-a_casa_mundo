@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const axios = require('axios');
 
 module.exports = (app) => {
-  cron.schedule('*/5 * * * *', async () => {
+  cron.schedule('*/2 * * * *', async () => {
     const buildings = await app
       .db('buildings')
       .select('id', 'cep')
@@ -11,7 +11,7 @@ module.exports = (app) => {
       .orWhere('longitude', null)
       .whereNot('cep', null)
       .whereNot('status', 'deleted')
-      .limit(5)
+      .limit(2)
       .then()
       .catch((err) => {
         throw err;
