@@ -66,6 +66,7 @@ module.exports = (app) => {
         .select('p.*', 'cp.status as status')
         .leftJoin('plans as p', 'p.id', 'cp.plan_id')
         .where('cp.company_id', company.id)
+        .whereNot('status', 'deleted')
         .first()
         .catch((err) => {
           res.status(500).send({ msg: 'Erro inesperado' });
