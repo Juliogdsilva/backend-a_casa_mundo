@@ -13,7 +13,7 @@ module.exports = (app) => {
       .whereNotNull('cep')
       .whereNot({ not_found_brasil_api: 1, not_found_ibge_api: 1 })
       .whereNot({ status: 'deleted' })
-      .limit(2)
+      .limit(4)
       .then()
       .catch((err) => {
         throw err;
