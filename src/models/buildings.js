@@ -9,6 +9,8 @@ module.exports = () => {
       neighborhood: item.neighborhood,
       city: item.city,
       state: item.state,
+      latitude: item.latitude,
+      longitude: item.longitude,
       units: item.units,
       towers: item.towers,
       construction_companies: item.construction_companies,
