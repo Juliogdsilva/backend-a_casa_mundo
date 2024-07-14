@@ -8,12 +8,12 @@ module.exports = (app) => {
     const buildings = await app
       .db('buildings')
       .select('id', 'cep')
-      .where('latitude', null)
-      .orWhere('longitude', null)
-      .whereNot('cep', null)
+      .whereNull('latitude')
+      .whereNull('longitude')
+      .whereNotNull('cep')
       .whereNot({ not_found_brasil_api: 1, not_found_ibge_api: 1 })
-      .whereNot('status', 'deleted')
-      .limit(5)
+      .whereNot({ status: 'deleted' })
+      .limit(2)
       .then()
       .catch((err) => {
         throw err;
