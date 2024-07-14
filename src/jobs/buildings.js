@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const axios = require('axios');
 
 module.exports = (app) => {
-  cron.schedule('*/2 * * * *', async () => {
+  cron.schedule('*/5 * * * *', async () => {
     const buildings = await app
       .db('buildings')
       .select('id', 'cep')
