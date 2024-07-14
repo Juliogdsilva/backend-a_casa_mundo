@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const axios = require('axios');
 
 module.exports = (app) => {
-  cron.schedule('*/5 * * * *', async () => {
+  cron.schedule('*/2 * * * *', async () => {
     const date = new Date();
     const buildings = await app
       .db('buildings')
@@ -13,7 +13,7 @@ module.exports = (app) => {
       .whereNot('cep', null)
       .whereNot({ not_found_brasil_api: 1, not_found_ibge_api: 1 })
       .whereNot('status', 'deleted')
-      .limit(2)
+      .limit(5)
       .then()
       .catch((err) => {
         throw err;
