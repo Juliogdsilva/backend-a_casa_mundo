@@ -50,8 +50,8 @@ module.exports = (app) => {
           if (err.response?.status === 524) return;
           throw err;
         });
-      const latitude = getCoordinates?.data?.lat;
-      const longitude = getCoordinates?.data?.lng;
+      latitude = getCoordinates?.data?.lat;
+      longitude = getCoordinates?.data?.lng;
 
       if (latitude && longitude) {
         const date = new Date();
@@ -64,7 +64,6 @@ module.exports = (app) => {
             throw err;
           });
       }
-
     }
   });
 };
