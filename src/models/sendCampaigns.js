@@ -1,9 +1,9 @@
 module.exports = () => {
-  const modelCampaigns = (item) => {
+  const modelSendCampaigns = (item) => {
     const role = {
-      folder: item.folder,
-      name: item.name,
+      campaign_id: item.campaign_id,
       company_id: item.company_id,
+      units: item.units,
       note: item.note,
       status: item.status,
     };
@@ -11,6 +11,6 @@ module.exports = () => {
   };
 
   return {
-    modelCampaigns,
+    modelSendCampaigns,
   };
 };

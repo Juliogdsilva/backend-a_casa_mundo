@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt-nodejs');
-const CryptoJS = require('crypto-js');
-const speakeasy = require('speakeasy');
+const bcrypt = require("bcrypt-nodejs");
+const CryptoJS = require("crypto-js");
+const speakeasy = require("speakeasy");
 
 module.exports = () => {
   function encryptPassword(password) {
@@ -15,7 +15,10 @@ module.exports = () => {
   }
 
   function encryptQRcode(qrcode) {
-    const encrypted = CryptoJS.DES.encrypt(qrcode, process.env.AUTH_SECRET).toString();
+    const encrypted = CryptoJS.DES.encrypt(
+      qrcode,
+      process.env.AUTH_SECRET
+    ).toString();
     return encrypted;
   }
 
@@ -29,7 +32,7 @@ module.exports = () => {
     const secret = JSON.parse(saveSecret).base32;
     const verified = speakeasy.totp.verify({
       secret,
-      encoding: 'base32',
+      encoding: "base32",
       token,
       window: process.env.QT_2FA_WINDOW,
     });
