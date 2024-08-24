@@ -74,6 +74,11 @@ module.exports = (app) => {
     .get(controllers.buildings.getCities);
 
   app
+    .route("/buildings/neighborhood/:city")
+    .all(app.src.config.passport.authenticate())
+    .get(controllers.buildings.getNeighborhood);
+
+  app
     .route("/buildings/:id")
     .all(app.src.config.passport.authenticate())
     .put(upload.array("images"), controllers.buildings.save)
