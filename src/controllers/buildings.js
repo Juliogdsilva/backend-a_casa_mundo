@@ -1,3 +1,4 @@
+/* eslint-disable operator-assignment */
 module.exports = (app) => {
   const {
     existsOrError,
@@ -93,6 +94,7 @@ module.exports = (app) => {
     const search = req.query.search || false;
     const city = req.query.city || false;
     const date = req.query.date || false;
+    const sn = req.query.sn || [];
     const order = req.query.or === "asc" ? "asc" : "desc";
 
     const buildings = await app
@@ -106,6 +108,12 @@ module.exports = (app) => {
         }
         if (city) query.where("city", "like", `%${city}%`);
         if (date) query.where("completion_date", "like", `%${date}%`);
+        if (sn.length > 0) {
+          for (let i = 0; i < sn.length; i = i + 1) {
+            const n = sn[i];
+            query.orWhere("neighborhood", "like", `%${n}%`);
+          }
+        }
       })
       .where("status", "active")
       .orderBy("id", order)
@@ -115,7 +123,7 @@ module.exports = (app) => {
         res.status(500).send({ msg: "Erro inesperado" });
         throw err;
       });
-    for (let i = 0; i < buildings.data.length; i += 1) {
+    for (let i = 0; i < buildings.data.length; i = i + 1) {
       const building = buildings.data[i];
 
       const images = await app
