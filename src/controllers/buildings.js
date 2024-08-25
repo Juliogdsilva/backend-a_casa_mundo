@@ -153,6 +153,9 @@ module.exports = (app) => {
         throw err;
       });
 
+    if (!building)
+      return res.status(404).send({ msg: "Empreendimento não localizado" });
+
     const images = await app
       .db("buildings_images")
       .select("id", "name", "url")
