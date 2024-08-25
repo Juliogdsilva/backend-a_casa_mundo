@@ -111,7 +111,8 @@ module.exports = (app) => {
         if (sn.length > 0) {
           for (let i = 0; i < sn.length; i = i + 1) {
             const n = sn[i];
-            query.andWhere("neighborhood", "like", `%${n}%`);
+            if (i === 0) query.where("neighborhood", "like", `%${n}%`);
+            else query.orWhere("neighborhood", "like", `%${n}%`);
           }
         }
       })
