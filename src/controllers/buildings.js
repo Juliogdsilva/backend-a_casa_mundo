@@ -243,6 +243,7 @@ module.exports = (app) => {
       .select("neighborhood")
       .where({ city: req.params.city })
       .whereNot("status", "deleted")
+      .orderBy("neighborhood", "desc", "last")
       .then()
       .catch((err) => {
         res.status(500).send({ msg: "Erro inesperado" });
