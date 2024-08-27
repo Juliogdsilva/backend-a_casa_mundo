@@ -217,6 +217,7 @@ module.exports = (app) => {
   const getCities = async (req, res) => {
     const cities = await app
       .db("buildings")
+      .orderBy("city", "asc")
       .select("city")
       .whereNot("status", "deleted")
       .then()
