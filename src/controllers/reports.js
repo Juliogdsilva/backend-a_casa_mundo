@@ -25,6 +25,24 @@ module.exports = (app) => {
     return res.status(200).send({ data: buildings });
   };
 
+  const getTotalUnits = async (req, res) => {
+    if (!req.originalUrl.startsWith("/reports")) {
+      return res.status(403).send({ msg: "Solicitação invalida." });
+    }
+
+    const units = await app
+      .db("buildings")
+      .sum("units as count")
+      .first()
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: "Erro inesperado" });
+        throw err;
+      });
+
+    return res.status(200).send({ data: units });
+  };
+
   const getTotalCampaigns = async (req, res) => {
     if (!req.originalUrl.startsWith("/reports")) {
       return res.status(403).send({ msg: "Solicitação invalida." });
@@ -96,6 +114,7 @@ module.exports = (app) => {
 
   return {
     getTotalBuildings,
+    getTotalUnits,
     getTotalCampaigns,
     getTotalEmpCampaigns,
     getTotalUnitsCampaigns,

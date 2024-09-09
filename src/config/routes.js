@@ -115,6 +115,11 @@ module.exports = (app) => {
     controllers.reports.getTotalBuildings
   );
   app.get(
+    "/reports/units",
+    // app.src.config.passport.authenticate(),
+    controllers.reports.getTotalUnits
+  );
+  app.get(
     "/reports/campaigns/:id",
     app.src.config.passport.authenticate(),
     controllers.reports.getTotalCampaigns
