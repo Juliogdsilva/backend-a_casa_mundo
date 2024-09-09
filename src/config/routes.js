@@ -116,7 +116,7 @@ module.exports = (app) => {
   );
   app.get(
     "/reports/units",
-    // app.src.config.passport.authenticate(),
+    app.src.config.passport.authenticate(),
     controllers.reports.getTotalUnits
   );
   app.get(
